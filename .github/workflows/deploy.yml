@@ -1,0 +1,32 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH Key Setup
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.FASTAPI_PEM_KEY }}
+          known_hosts: 'just accept'
+
+      - name: SSH to EC2 and Deploy
+        run: |
+          ssh ubuntu@ec2-13-60-35-142.eu-north-1.compute.amazonaws.com << EOF
+            cd fastapi-book-project
+            if [ ! -d "venv" ]; then
+                python3 -m venv venv
+            fi
+            source venv/bin/activate
+            pip install -r requirements.txt
+            gunicorn main:app --bind 0.0.0.0:8000 --workers 1 --threads 4 --worker-class uvicorn.workers.UvicornWorker
+          EOF
