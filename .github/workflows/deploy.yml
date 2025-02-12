@@ -34,6 +34,6 @@ jobs:
             source venv/bin/activate
             pip install -r requirements.txt
             fuser -k 8000/tcp || true
-            nohup gunicorn main:app --bind 0.0.0.0:8000 --workers 1 --threads 4 --worker-class uvicorn.workers.UvicornWorker &
+            nohup gunicorn main:app --bind 0.0.0.0:8000 --workers 1 --threads 4 --worker-class uvicorn.workers.UvicornWorker > gunicorn.log 2>&1 &
             exit
           EOF
