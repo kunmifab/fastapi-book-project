@@ -27,6 +27,7 @@ jobs:
         run: |
           ssh -t ubuntu@ec2-16-171-23-80.eu-north-1.compute.amazonaws.com << EOF
             cd fastapi-book-project
+            git pull
             if [ ! -d "venv" ]; then
                 python3 -m venv venv
             fi
