@@ -19,9 +19,13 @@ jobs:
           key: ${{ secrets.FASTAPI_PEM_KEY }}
           known_hosts: 'just accept'
 
+      - name: Add Host to Known Hosts
+        run: |
+          ssh-keyscan -H ec2-16-171-23-80.eu-north-1.compute.amazonaws.com >> ~/.ssh/known_hosts
+
       - name: SSH to EC2 and Deploy
         run: |
-          ssh ubuntu@ec2-16-171-23-80.eu-north-1.compute.amazonaws.com << EOF
+          ssh -t ubuntu@ec2-16-171-23-80.eu-north-1.compute.amazonaws.com << EOF
             cd fastapi-book-project
             if [ ! -d "venv" ]; then
                 python3 -m venv venv
